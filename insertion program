@@ -1,0 +1,30 @@
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node* link;
+};
+
+int main() {
+    struct node* head = (struct node*)malloc(sizeof(struct node));
+    struct node* current = (struct node*)malloc(sizeof(struct node));
+    struct node* current1 = (struct node*)malloc(sizeof(struct node));
+
+    head->data = 45;
+    head->link = current;
+
+    current->data = 98;
+    current->link = current1;
+
+    current1->data = 3;
+    current1->link = NULL;
+
+    printf("Data in the nodes: %d %d %d\n", head->data, current->data, current1->data);
+
+
+    free(current1);
+    free(current);
+    free(head);
+
+    return 0;
+}
