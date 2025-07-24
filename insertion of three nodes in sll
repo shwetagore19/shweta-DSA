@@ -1,0 +1,31 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+int data;
+struct node*next;
+};
+
+int main(){
+struct node*head = (struct node*)malloc(sizeof(struct node));
+head->data=10;
+head->next=NULL;
+
+
+struct node*head1 = (struct node*)malloc(sizeof(struct node));
+head1->data=50;
+head1->next=NULL;
+
+
+struct node*newhead = (struct node*)malloc(sizeof(struct node));
+newhead->data=90;
+newhead->next=NULL;
+
+
+
+printf("%d %d %d",head->data,head1->data,newhead->data);
+free(head);
+free(head1);
+free(newhead);
+return 0;
+}
