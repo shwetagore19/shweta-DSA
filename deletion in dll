@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node* prev;
+    struct node* next;
+};
+
+// Function to delete head node of the doubly linked list
+struct node* delhead(struct node* head) {
+    if (head == NULL)
+        return NULL;
+
+    struct node* temp = head;
+    head = head->next;
+
+    if (head != NULL)
+        head->prev = NULL;
+
+    free(temp);
+    return head;
+}
+
+// Function to print the list
+void printlist(struct node* head) {
+    struct node* curr = head;
+    while (curr != NULL) {
+        printf("%d ", curr->data);
+        curr = curr->next;
+    }
+    printf("\n");
+}
+
+// Function to create a new node
+struct node* createnode(int data) {
+    struct node* newnode = (struct node*)malloc(sizeof(struct node));
+    newnode->data = data;
+    newnode->prev = NULL;
+    newnode->next = NULL;
+    return newnode;
+}
+
+int main() {
+    // Manually creating a list: 10 <-> 20 <-> 30
+    struct node* head = createnode(10);
+    struct node* second = createnode(20);
+    struct node* third = createnode(30);
+
+    head->next = second;
+    second->prev = head;
+    second->next = third;
+    third->prev = second;
+
+    printf("Original List:\n");
+    printlist(head);
+
+    head = delhead(head);  // Delete head node
+
+    printf("After deleting head:\n");
+    printlist(head);
+
+    return 0;
+}
