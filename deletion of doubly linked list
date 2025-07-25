@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node* prev;
+    struct node* next;
+};
+
+struct node* delhead(struct node* head) {
+    if (head == NULL)
+        return NULL;
+
+    struct node* temp = head;
+    head = head->next;
+
+    if (head != NULL)
+        head->prev = NULL;
+
+    free(temp);
+    return head;
+}
+
+void printlist(struct node* head) {
+    struct node* curr = head;
+    while (curr != NULL) {
+        printf("%d ", curr->data);
+        curr = curr->next;
+    }
+    printf("\n");
+}
+
+struct node* createnode(int data) {
+    struct node* newnode = (struct node*)malloc(sizeof(struct node));
+    newnode->data = data;
+    newnode->prev = NULL;
+    newnode->next = NULL;
+    printf("%d\n", newnode->data);
+    return newnode;
+}
+
+int main() {
+    struct node* head = createnode(20);
+    struct node* second = createnode(40);
+    struct node* third = createnode(50);
+
+    head->next = second;
+    head->prev = NULL;
+
+    second->next = third;
+    second->prev = head;
+
+    third->next = NULL;
+    third->prev = second;
+
+    printf("original list:\n");
+    printlist(head);
+
+    head = delhead(head);
+
+    printf("after deleting head:\n");
+    printlist(head);
+
+    return 0;
+}
