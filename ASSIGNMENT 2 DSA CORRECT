@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char name[50];
+    int roll_no;
+    float sgpa;
+} Student;
+
+void InsertionSortByRoll(Student arr[], int n) {
+    int i, j;
+    Student key;
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+        while (j >= 0 && arr[j].roll_no > key.roll_no) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+void printArray(Student arr[], int n) {
+    int i;
+    printf("Roll No\tName\t\tSGPA\n");
+    printf("---------------------------------\n");
+    for (i = 0; i < n; i++) {
+        printf("%4d\t%-10s\t%.2f\n", arr[i].roll_no, arr[i].name, arr[i].sgpa);
+    }
+}
+
+int main() {
+    Student arr[] = {
+        {"Aarya",   12, 8.5},
+        {"Soham",   4, 7.9},
+        {"Alex",    2, 8.2},
+        {"Sahil",   3, 8.0},
+        {"Manan",   8, 9.1},
+        {"Henry",   6, 7.5},
+        {"Jenelia", 5, 8.8},
+        {"Tom",     7, 7.3},
+        {"Jerry",   11, 8.1},
+        {"Sunil",   13, 7.8},
+        {"Yeman",   10, 8.4},
+        {"Aloka",   9, 8.6},
+        {"Elbert",  1, 7.7}
+    };
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    InsertionSortByRoll(arr, n);
+    printArray(arr, n);
+
+    return 0;
+}
