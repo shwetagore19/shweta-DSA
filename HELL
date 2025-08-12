@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <string.h>
+typedef struct {
+    int roll_no;
+    float sgpa;
+    char name[50];
+} Student;
+
+int main() {
+    int i, j, pass_count = 0;
+    Student temp;
+
+
+    Student arr[7] = {
+        {101, 8.2, "Ravi"},
+        {102, 9.1, "Anjali"},
+        {103, 7.5, "Zara"},
+        {104, 8.9, "Kunal"},
+        {105, 6.8, "Bhavesh"},
+        {106, 9.5, "Meera"},
+        {107, 7.9, "Tina"}
+    };
+
+    for (i = 1; i < 7; i++) {
+        j = i;
+        while (j > 0 && strcmp(arr[j - 1].name, arr[j].name) > 0) {
+
+            temp = arr[j];
+            arr[j] = arr[j - 1];
+            arr[j - 1] = temp;
+            j--;
+        }
+        pass_count++;
+
+
+        printf("After pass %d:\n", pass_count);
+        for (int k = 0; k < 7; k++) {
+            printf("Roll No: %d, SGPA: %.2f, Name: %s\n", arr[k].roll_no, arr[k].sgpa, arr[k].name);
+        }
+        printf("\n");
+    }
+
+    printf("Total passes: %d\n", pass_count);
+    return 0;
+}
