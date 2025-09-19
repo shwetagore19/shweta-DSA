@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct node {
+    int data;
+    struct node* next;
+};
+
+// Queue structure
+struct Queue {
+    struct node* front;
+    struct node* rear;
+};
+
+// Function to create a new node
+struct node* createnode(int data) {
+    struct node* newnode = (struct node*)malloc(sizeof(struct node));
+    if (newnode == NULL) {
+        printf("Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    newnode->data = data;
+    newnode->next = NULL;
+    return newnode;
+}
+
+// Function to create a new queue
+struct Queue* createQueue() {
+    struct Queue* q = (struct Queue*)malloc(sizeof(struct Queue));
+    if (q == NULL) {
+        printf("Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    q->front = q->rear = NULL;
+    return q;
+}
+
+// Enqueue operation
+void Enqueue(struct Queue* q, int data) {
+    struct node* newnode = createnode(data);
+    if (q->rear == NULL) {
+        q->front = q->rear = newnode;
+    } else {
+        q->rear->next = newnode;
+        q->rear = newnode;
+    }
+    printf("Enqueue: %d\n", data);
+}
+
+// Optional: Dequeue operation (to make the queue fully functional)
+int Dequeue(struct Queue* q) {
+    if (q->front == NULL) {
+        printf("Queue is empty, cannot dequeue\n");
+        return -1;  // or some error value
+    }
+    struct node* temp = q->front;
+    int data = temp->data;
+    q->front = q->front->next;
+    if (q->front == NULL) {
+        q->rear = NULL;
+    }
+    free(temp);
+    return data;
+}
+
+// Display function
+void displayQueue(struct Queue* q) {
+    if (q->front == NULL) {
+        printf("Queue is empty!\n");
+        return;
+    }
+    struct node* temp = q->front;
+    printf("Queue: ");
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+// Main function
+int main() {
+    struct Queue* myQueue = createQueue();
+
+    Enqueue(myQueue, 10);
+    Enqueue(myQueue, 20);
+    Enqueue(myQueue, 30);
+    displayQueue(myQueue);
+
+    Enqueue(myQueue, 40);
+    displayQueue(myQueue);
+
+    // Optional test for dequeue
+    printf("Dequeued: %d\n", Dequeue(myQueue));
+    displayQueue(myQueue);
+
+    // Free remaining nodes
+    while (myQueue->front != NULL) {
+        Dequeue(myQueue);
+    }
+    free(myQueue);
+
+    return 0;
+}
