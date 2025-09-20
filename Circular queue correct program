@@ -1,0 +1,108 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+int data;
+struct node*next;
+};
+
+// Function to enqueue
+struct queue{
+struct node*front;
+struct node*rear;
+};
+
+struct node*createnode(int data){
+struct node*newnode=(struct node*)malloc(sizeof(struct node));
+if(!newnode){
+printf("Memory allocation failed\n");
+exit(1);
+}
+newnode->data=data;
+newnode->next=NULL;
+return newnode;
+}
+
+struct queue*createqueue(){
+struct queue*q=(struct queue*)malloc(sizeof(struct queue));
+if(!q){
+printf("Memory allocation failed\n");
+exit(1);
+}
+q->front=NULL;
+q->rear=NULL;
+return q;
+}
+
+void enqueue(struct queue*q,int data){
+struct node*newnode=createnode(data);
+
+if(q->front==NULL){
+q->front=newnode;
+q->rear=newnode;
+newnode->next= newnode;
+} else{
+q->rear->next=newnode;
+q->rear=newnode;
+q->rear->next=q->front;
+}
+printf("Enqueue: %d\n",data);
+}
+
+
+//Funtion of Dequeue operation
+int dequeue(struct queue*q){
+if(q->front==NULL){
+printf("Queue is empty,cannot dequeue\n");
+return -1;
+}
+
+int data;
+if(q->front==q->rear){
+data=q->front->data;
+free(q->front);
+q->front=NULL;
+q->rear=NULL;
+}else{
+struct node*temp=q->front;
+data=temp->data;
+q->front=q->front->next;
+q->rear->next=q->front;
+free(temp);
+}
+printf("Dequeue: %d\n",data);
+return data;
+}
+
+//Display function
+void displayqueue(struct queue*q){
+if(q->front==NULL){
+printf("Queue is empty\n");
+return;
+}
+struct node*temp=q->front;
+printf("Queue:");
+do{
+printf("%d->",temp->data);
+temp=temp->next;
+} while(temp!=q->front);
+}
+
+int main(){
+struct queue*q=createqueue();
+enqueue(q,2);
+enqueue(q,8);
+enqueue(q,5);
+displayqueue(q);
+
+printf("\nAfter dequeue operation:\n");
+dequeue(q);
+
+displayqueue(q);
+
+printf("\nEnqueue after dequeue:\n");
+enqueue(q,58);
+displayqueue(q);
+
+return 0;
+}
