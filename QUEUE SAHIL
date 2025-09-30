@@ -1,0 +1,91 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* next;
+
+    Node(int val) {
+        data = val;
+        next = NULL;
+    }
+};
+
+class Queue {
+    Node* f;
+    Node* r;
+
+public:
+    Queue() {
+        f = r = NULL;
+    }
+//enque
+void enque(int x) {
+  Node* p = new Node(x);
+        if (f == NULL) {
+            f = r = p;
+            r->next = f;
+        } else {
+            r->next = p;
+            p->next = f;
+            r = p;
+        }
+    }
+//deque
+    void dqueu() {
+        if (f == NULL) {
+            cout << "Queue is empty";
+            return;
+        }
+
+        if (f == r) {
+            delete f;
+            f = r = NULL;
+        } else {
+            Node* temp = f;
+            f = f->next;
+            r->next = f;
+            delete temp;
+        }
+    }
+//display
+    void display() {
+        if (f == NULL) {
+            cout << "Queue is empty\n";
+            return;
+        }
+
+        Node* temp = f;
+        do {
+            cout << temp->data << " ";
+            temp = temp->next;
+        } while (temp != f);
+        cout << endl;
+    }
+};
+
+int main() {
+Queue s;
+s.enque(8);
+s.enque(2);
+s.enque(5);
+s.display();
+
+s.dqueu();
+s.display();
+
+s.dqueu();
+
+s.display();
+
+
+    return (0);
+}
+
+
+
+
+
+
+
