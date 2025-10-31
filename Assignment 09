@@ -1,0 +1,61 @@
+#include<iostream>
+#include<climits>
+using namespace std;
+
+#define MAX_V 100
+
+intminDistance(intdist[],bool visited[],int n)
+{
+	int min=INT_MAX;
+	intminIndex= -1;
+	for(int v=0;v<n;v++){
+		if(!visited[v] &&dist[v]<= min){
+			min= dist[v];
+			minIndex= v;
+		}
+	}
+	returnminIndex;//return the corresponding node
+}
+
+voiddijkstras(int G[MAX_V][MAX_V],intsource,intdist[],int n)
+{
+	bool visited[MAX_V];
+	
+	for(inti=0;i<n;i++){
+		dist[i]=INT_MAX;
+//initialize with maximum value
+		visited[i]=false;
+//initially all the values are false for visited array 
+	}
+dist[source]=0; //Initialization of source
+
+for(inti=0;  i<n-1; i++){
+	int u=minDistance(dist,visited,n);
+		visited[u]=true;
+for(int v=0; v<n; v++)//update the adjacent node distance
+{
+if(!visited[v] && G[u][v] &&dist[u]!=INT_MAX &&dist[u]+G[u][v]<= dist[v])
+{				
+dist[v]= dist[u]+ G[u][v];
+}
+}
+	  }
+  }
+// dist[u]+G[u][v]check previous distance
+
+int main(){
+	int n=5;
+	int G[MAX_V][MAX_V]={
+	{0,10,20,0,3},{10,0,5,0,2},{20,5,0,11,0},{0,0,11,0,15},{3,2,0,15,0}
+	};
+	
+	intdist[MAX_V];
+	
+	dijkstras(G,0,dist,n);
+	
+	cout<<"Vertex distance from source"<<endl;
+	for(inti=0;i<n;i++){
+		cout<<i<<" "<<dist[i] <<endl;
+	}
+	return 0;
+}
