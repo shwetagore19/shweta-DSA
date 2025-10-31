@@ -1,0 +1,146 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+
+#define MAX 5   // Limit set to 5 departments
+
+const char *defaultNames[] = {
+    "Main Gate", "Computer Dept", "Mechanical Dept",
+    "Civil Dept", "Library"
+};
+
+/* read an integer between min and max (inclusive) with prompt */
+int readInt(const char *msg, int min, int max) {
+    char line[200];
+    long val;
+    char *endptr;
+    while (1) {
+        if (msg) printf("%s", msg);
+        if (!fgets(line, sizeof(line), stdin)) {
+            clearerr(stdin);
+            continue;
+        }
+        val = strtol(line, &endptr, 10);
+        if (endptr != line && (*endptr == '\n' || *endptr == '\0')) {
+            if (val >= min && val <= max) return (int)val;
+        }
+        printf("Invalid input, try again.\n");
+    }
+}
+
+/* helper for Prim */
+int minKey(int key[], int inMST[], int v) {
+    int min = INT_MAX, idx = -1;
+    for (int i = 0; i < v; i++) {
+        if (!inMST[i] && key[i] < min) {
+            min = key[i];
+            idx = i;
+        }
+    }
+    return idx;
+}
+
+/* Prim's algorithm */
+void prim(int g[MAX][MAX], int v, char n[MAX][30]) {
+    int parentArr[MAX];
+    int key[MAX];
+    int inMST[MAX] = {0};
+
+    for (int i = 0; i < v; i++) {
+        key[i] = INT_MAX;
+        parentArr[i] = -1;
+    }
+    key[0] = 0;
+
+    for (int count = 0; count < v - 1; count++) {
+        int u = minKey(key, inMST, v);
+        if (u == -1) break; /* disconnected */
+        inMST[u] = 1;
+        for (int w = 0; w < v; w++) {
+            if (g[u][w] > 0 && !inMST[w] && g[u][w] < key[w]) {
+                key[w] = g[u][w];
+                parentArr[w] = u;
+            }
+        }
+    }
+
+    printf("\nPrim's Minimum Spanning Tree:\n");
+    int sum = 0, edges = 0;
+    for (int i = 1; i < v; i++) {
+        if (parentArr[i] != -1) {
+            printf("%-18s -- %-18s = %d\n", n[parentArr[i]], n[i], g[i][parentArr[i]]);
+            sum += g[i][parentArr[i]];
+            edges++;
+        }
+    }
+    if (edges != v - 1) printf("(Graph not fully connected)\n");
+    printf("Total Weight = %d\n", sum);
+}
+
+int main(void) {
+    int g[MAX][MAX] = {0};
+    int V;
+    char names[MAX][30];
+
+    printf("Campus Options:\n");
+    printf("1) Default Campus (preset 5 departments)\n");
+    printf("2) Custom input\n");
+    int choice = readInt("Enter Choice (1-2): ", 1, 2);
+
+    if (choice == 1) {
+        V = 5;
+        int preset[5][5] = {
+            {0, 4, 2, 0, 0},
+            {4, 0, 1, 3, 0},
+            {2, 1, 0, 4, 5},
+            {0, 3, 4, 0, 2},
+            {0, 0, 5, 2, 0}
+        };
+        for (int i = 0; i < V; i++) {
+            strncpy(names[i], defaultNames[i], sizeof(names[i]) - 1);
+            names[i][sizeof(names[i]) - 1] = '\0';
+            for (int j = 0; j < V; j++) g[i][j] = preset[i][j];
+        }
+    } else {
+        V = readInt("Enter number of departments (2-5): ", 2, MAX);
+        printf("Enter names of %d departments (press Enter to use default 'DeptX'):\n", V);
+        for (int i = 0; i < V; i++) {
+            printf("Name of dept %d: ", i + 1);
+            if (!fgets(names[i], sizeof(names[i]), stdin)) {
+                clearerr(stdin);
+                names[i][0] = '\0';
+            }
+            names[i][strcspn(names[i], "\n")] = '\0';
+            if (names[i][0] == '\0') {
+                snprintf(names[i], sizeof(names[i]), "Dept%d", i + 1);
+            }
+        }
+
+        printf("\nEnter distances between departments (0 = no direct edge):\n");
+        for (int i = 0; i < V; i++) {
+            for (int j = i + 1; j < V; j++) {
+                char msg[200];
+                snprintf(msg, sizeof(msg), "Distance %s - %s: ", names[i], names[j]);
+                int d = readInt(msg, 0, 1000000);
+                g[i][j] = g[j][i] = d;
+            }
+        }
+    }
+
+    /* Print adjacency matrix */
+    printf("\nAdjacency Matrix:\n");
+    printf("%18s", "");
+    for (int i = 0; i < V; i++) printf("%-18s", names[i]);
+    printf("\n");
+    for (int i = 0; i < V; i++) {
+        printf("%-18s", names[i]);
+        for (int j = 0; j < V; j++) printf("%-18d", g[i][j]);
+        printf("\n");
+    }
+
+    prim(g, V, names);
+
+    printf("\nDone.\n");
+    return 0;
+}
